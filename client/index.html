@@ -13,11 +13,11 @@
       #chat li:nth-child(odd) { background: #eee; }
 	</style>
 </head>
-<body>
+<body ng-controller="SocketController as socket">
 	<div ng-controller="ConvoController as convoCtrl">
 	<ul id="chat">
+		<li>Status: {{status}}</li>
 		<li>Number of messages: {{messages.length}}</li>
-		<li>{{test}}</li>
 		<li ng-repeat="msg in messages">
 		{{ msg.username + " said " + msg.message + "  @ " + msg.date }}
 		</li>
@@ -27,34 +27,11 @@
 		<input id="message" ng-model="message" autocomplete="off"/><button id="button" ng-click="sendMessage(message)">Send</button>
 		</form>
 	</div>
+	</div>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
 
 <script type="text/javascript" src="chatApp.js"></script>
 	<script src="https://cdn.socket.io/socket.io-1.4.7.js"></script>
 	<script src="https://code.jquery.com/jquery-3.1.0.min.js" ></script>
-
-	<script>
-  var socket = io.connect('http://localhost:3000/news');
-</script>
-	<!-- <script>
-	jQuery(function($) {
-
-
-	// 	var socket = io.connect('/localhost:3000', {reconnect: true});
-
-	// 	var $messageForm = $('#send-message');
-	// 	var $messageBox = $('messaage');
-	// 	var $button = $('#button');
-	// 	var $chat = $('chat');
-
-	// 	$messageForm.submit(function(e) {
-	// 		e.preventDefault();
-	// 		socket.emit('send-message', $messageBox.val());
-	// 		messageBox.val("");
-	// 	})
-	// })
-  		
-  		//var objet = "in french";
-	</script> -->
 </body>
 </html>

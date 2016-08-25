@@ -2,37 +2,53 @@
 
 var app = angular.module('chatTag', []);
 
-
-app.controller('ConvoController', ['$scope', function($scope) {
+app.controller('SocketController' , ['$scope', function($scope) {
+	$scope.status = "Chat was launched";
 	$scope.username = "user 1";
-	$scope.messages = init;
-	$scope.test = "this is a test";
-	$scope.currentMessage = "";
+	$scope.messages = [];
+
 
 	$scope.addMessage = function(message) {
-		$scope.messages.push( {
+
+		$scope.$apply(function() {
+		console.log("adding a new message");
+		$scope.messages.push({
 			username: $scope.username, 
 			message: message,
 			date: new Date()
-			}
-			);
+			});
+		$scope.status = "addMessage()";
+		$scope.message = "";
+		$scope.$apply();
+		});
 	};
+
+	$scope.emitMessage = function (msg) {
+		socket.emit('/message', { content: msg });
+		$scope.status = "emitMessage()";
+	};
+
+	socket = io.connect('http://localhost:3000');
+
+	socket.on('/message', function (data, fn) {
+		console.log("submitted: " + data.content);
+		$scope.addMessage(data.content);
+		$scope.status = "Message recieved";
+	});
+
+}]);
+
+app.controller('ConvoController', ['$scope', function($scope) {
+	$scope.username = "user 1";	
+	$scope.currentMessage = "";
 }]);
 
 app.controller('ChatBoxController', ['$scope', function($scope) {
 	$scope.message = "";
 
-	$scope.sendMessage = function(message) {
-		// update the global instance of a message
-		$scope.message = message;
-
-		// show that message as a part of the conversation
-		$scope.addMessage(message);
-		// send the message to the backend using POST Request
-
-		// clear the message
+	$scope.sendMessage = function(msg) {
+		$scope.emitMessage(msg);
 		$scope.message = "";
-		$scope.test = "changed it";
 	};
 }]);
 

@@ -5,14 +5,20 @@ var numChatters = 0;
 
 server.listen(3000, function(err) {
   if (err)
-    console.log("Error connecting to server")
+    console.log("Error connecting to server");
   else
-    console.log("Connection to server established.")
+    console.log("Connection to server established.");
 });
 
 io.on('connection', function(socket) {
 	numChatters ++;
-    console.log("Another user joined that chat. " + numChatters + " total chatters.");
+  console.log("Another user joined that chat. " + numChatters + " total chatters.");
+  io.emit("/message", "Thanks for joining the chat. There are " + numChatters + " other people chatting as well.");
+
+    socket.on('/message', function(data) {
+      console.log(data.content);
+      io.emit('/message', data);
+    });
 
     socket.on('disconnect', function() {
         numChatters --;
